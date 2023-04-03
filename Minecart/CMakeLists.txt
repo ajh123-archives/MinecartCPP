@@ -13,6 +13,7 @@ include_directories(
 	${RAYLIB_INCLUDE_DIR}
 	${IMGUI_INCLUDE_DIR}
 	${RLIMGUI_INCLUDE_DIR}
+	${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(minecart
@@ -20,4 +21,5 @@ target_link_libraries(minecart
 	raylib
 	imgui
 	rlimgui
+	lua
 )
