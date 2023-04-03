@@ -1,4 +1,9 @@
 #include <imgui.h>
+#include <stdio.h>
+#include <string>
+#include <time.h> 
+#include <raylib.h>
+#include <regex>
 #include "mc_logging.h"
 
 minecart::logging::Logger::Logger() {
@@ -12,12 +17,38 @@ void minecart::logging::Logger::Clear() {
 	this->LineOffsets.push_back(0);
 }
 
-void minecart::logging::Logger::AddLog(const char* fmt, ...) {
-	int old_size = this->Buf.size();
+void minecart::logging::Logger::AddLog(int msgType, const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-	this->Buf.appendfv(fmt, args);
+	this->AddLog(msgType, fmt, args);
 	va_end(args);
+}
+
+void minecart::logging::Logger::AddLog(int msgType, const char* fmt, va_list args) {
+	char timeStrBuffer[64] = { 0 };
+	time_t now = time(NULL);
+	struct tm *tm_info = localtime(&now);
+
+	strftime(timeStrBuffer, sizeof(timeStrBuffer), "%Y-%m-%d %H:%M:%S", tm_info);
+	std::string timeStr(timeStrBuffer);
+	std::string level = "";
+
+    switch (msgType) {
+        case LOG_INFO: level = "\033[1;34m[INFO]\033[0m: "; break;
+        case LOG_ERROR: level = "\033[1;33m[ERROR]\033[0m: "; break;
+        case LOG_WARNING: level = "\033[1;33m[WARN]\033[0m: "; break;
+        case LOG_DEBUG: level = "\033[1;37m[DEBUG]\033[0m: "; break;
+        default: break;
+    }
+	std::string newFmt = "["+timeStr+"] "+level+std::string(fmt)+"\n";
+
+	std::string guiFmt(newFmt.c_str());
+	std::regex target("\033\\[[0-9;]*[A-Za-z]");
+	guiFmt = std::regex_replace(guiFmt, target, "");
+
+	int old_size = this->Buf.size();
+	this->Buf.appendfv(guiFmt.c_str(), args);
+	vprintf(newFmt.c_str(), args);
 	for (int new_size = this->Buf.size(); old_size < new_size; old_size++)
 		if (this->Buf[old_size] == '\n')
 			this->LineOffsets.push_back(old_size + 1);

@@ -15,7 +15,8 @@ namespace minecart {
 			public:
 				Logger();
 				void Clear();
-				void AddLog(const char* fmt, ...);
+				void AddLog(int msgType, const char* fmt, va_list args);
+				void AddLog(int msgType, const char* fmt, ...);
 				void Draw(const char* title, bool* p_open = NULL);
 		};
 	}

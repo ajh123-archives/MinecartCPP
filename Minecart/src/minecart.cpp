@@ -1,5 +1,7 @@
 #include <raylib.h>
 #include <rlImGui.h>
+#include <stdio.h>
+#include <string>
 #include "minecart.h"
 #include "mc_logging.h"
 
@@ -23,20 +25,28 @@ namespace minecart {
 		minecart::logging::Logger* GetLogger() {
 			return logger;
 		}
+
+		void CustomLog(int msgType, const char *text, va_list args) {
+			// vprintf(text, args);
+			// printf("\n");
+			logger->AddLog(msgType, text, args);
+		}
 		//----------------------------------------------------------------------------------
 		// Main Enry Point
 		//----------------------------------------------------------------------------------
 		int Run(std::string title, int screenWidth, int screenHeight) {
 			// Initialization
 			//--------------------------------------------------------------------------------------
+			SetTraceLogCallback(CustomLog);
 			SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 			InitWindow(screenWidth, screenHeight, title.c_str());
 			rlImGuiSetup(true);
 
-			logger->AddLog("Hello Logging World");
+			logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
 
 			if (currentScene != nullptr) {
 				currentScene->Setup();
+				logger->AddLog(LOG_DEBUG, "MAIN: Scene Loaded");
 			}
 
 		#if defined(PLATFORM_WEB)
@@ -56,6 +66,7 @@ namespace minecart {
 			if (currentScene != nullptr) {
 				currentScene->Shutdown();
 			}
+			logger->AddLog(LOG_INFO, "MAIN: Program Shutdown");
 			rlImGuiShutdown();
 			CloseWindow();        // Close window and OpenGL context
 			//--------------------------------------------------------------------------------------
