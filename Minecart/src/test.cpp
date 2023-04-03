@@ -39,22 +39,21 @@ public:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
 
-		if (ImGui::Begin("3D View", &Open, ImGuiWindowFlags_NoScrollbar)) {
-			Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
+		ImGui::Begin("3D View", &this->Open, ImGuiWindowFlags_NoScrollbar);
+		Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
-			ImVec2 size = ImGui::GetContentRegionAvail();
+		ImVec2 size = ImGui::GetContentRegionAvail();
 
-			Rectangle viewRect = { 0 };
-			viewRect.x = this->ViewTexture.texture.width / 2 - size.x / 2;
-			viewRect.y = this->ViewTexture.texture.height / 2 - size.y / 2;
-			viewRect.width = size.x;
-			viewRect.height = -size.y;
+		Rectangle viewRect = { 0 };
+		viewRect.x = this->ViewTexture.texture.width / 2 - size.x / 2;
+		viewRect.y = this->ViewTexture.texture.height / 2 - size.y / 2;
+		viewRect.width = size.x;
+		viewRect.height = -size.y;
 
-			// draw the view
-			rlImGuiImageRect(&this->ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
+		// draw the view
+		rlImGuiImageRect(&this->ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
 
-			ImGui::End();
-		}
+		ImGui::End();
 		ImGui::PopStyleVar();
 	}
 

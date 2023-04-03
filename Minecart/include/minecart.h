@@ -3,6 +3,7 @@
 
 #include <string>
 #include <raylib.h>
+#include "mc_logging.h"
 
 namespace minecart {
 	namespace engine {
@@ -27,6 +28,7 @@ namespace minecart {
 		};
 
 		void SetSence(Scene* scene);
+		minecart::logging::Logger* GetLogger();
 	}
 }
 

@@ -1,6 +1,7 @@
 #include <raylib.h>
 #include <rlImGui.h>
 #include "minecart.h"
+#include "mc_logging.h"
 
 #if defined(PLATFORM_WEB)
 	#include <emscripten/emscripten.h>
@@ -10,7 +11,8 @@
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
 void UpdateDrawFrame(void);     // Update and Draw one frame
-minecart::engine::Scene* currentScene;
+minecart::engine::Scene* currentScene = nullptr;
+minecart::logging::Logger* logger = new minecart::logging::Logger();
 
 namespace minecart {
 	namespace engine {
@@ -18,6 +20,9 @@ namespace minecart {
 			currentScene = scene;
 		}
 
+		minecart::logging::Logger* GetLogger() {
+			return logger;
+		}
 		//----------------------------------------------------------------------------------
 		// Main Enry Point
 		//----------------------------------------------------------------------------------
@@ -28,7 +33,11 @@ namespace minecart {
 			InitWindow(screenWidth, screenHeight, title.c_str());
 			rlImGuiSetup(true);
 
-			currentScene->Setup();
+			logger->AddLog("Hello Logging World");
+
+			if (currentScene != nullptr) {
+				currentScene->Setup();
+			}
 
 		#if defined(PLATFORM_WEB)
 			emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -44,7 +53,9 @@ namespace minecart {
 
 			// De-Initialization
 			//--------------------------------------------------------------------------------------
-			currentScene->Shutdown();
+			if (currentScene != nullptr) {
+				currentScene->Shutdown();
+			}
 			rlImGuiShutdown();
 			CloseWindow();        // Close window and OpenGL context
 			//--------------------------------------------------------------------------------------
@@ -60,24 +71,20 @@ namespace minecart {
 void UpdateDrawFrame(void) {
 	// Update
 	//----------------------------------------------------------------------------------
-	// TODO: Update your variables here
-	//----------------------------------------------------------------------------------
+	if (currentScene != nullptr) {
+		currentScene->Update();
+	}
 
 	// Draw
 	//----------------------------------------------------------------------------------
-	currentScene->Update();
 	BeginDrawing();
 		rlImGuiBegin();
-
-		ClearBackground(RAYWHITE);
-
-		int w = GetScreenWidth();
-		int h = GetScreenHeight();
-		std::string text = "Congrats! You created your first window!";
-		size_t length = text.length();
-		DrawText(text.c_str(), (w/2)-length, h/2, 20, LIGHTGRAY);
-		currentScene->Open = true;
-		currentScene->Show();
+		ClearBackground(WHITE);
+		if (currentScene != nullptr) {
+			currentScene->Open = true;
+			currentScene->Show();
+		}
+		logger->Draw("Debug");
 		rlImGuiEnd();
 	EndDrawing();
 	//----------------------------------------------------------------------------------
