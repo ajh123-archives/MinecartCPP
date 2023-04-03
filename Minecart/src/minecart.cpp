@@ -4,6 +4,7 @@
 #include <string>
 #include "minecart.h"
 #include "mc_logging.h"
+#include "mc_lua.h"
 
 #if defined(PLATFORM_WEB)
 	#include <emscripten/emscripten.h>
@@ -15,6 +16,8 @@
 void UpdateDrawFrame(void);     // Update and Draw one frame
 minecart::engine::Scene* currentScene = nullptr;
 minecart::logging::Logger* logger = new minecart::logging::Logger();
+minecart::modifyable::LUAFile* luaFile = new minecart::modifyable::LUAFile();
+
 
 namespace minecart {
 	namespace engine {
@@ -42,6 +45,8 @@ namespace minecart {
 			InitWindow(screenWidth, screenHeight, title.c_str());
 			rlImGuiSetup(true);
 
+			logger->AddLog(LOG_DEBUG, "MAIN: Loading LUA");
+			luaFile->Start();
 			logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
 
 			if (currentScene != nullptr) {
@@ -66,6 +71,7 @@ namespace minecart {
 			if (currentScene != nullptr) {
 				currentScene->Shutdown();
 			}
+			luaFile->Shutdown();
 			logger->AddLog(LOG_INFO, "MAIN: Program Shutdown");
 			rlImGuiShutdown();
 			CloseWindow();        // Close window and OpenGL context
@@ -85,6 +91,7 @@ void UpdateDrawFrame(void) {
 	if (currentScene != nullptr) {
 		currentScene->Update();
 	}
+	luaFile->Update();
 
 	// Draw
 	//----------------------------------------------------------------------------------

@@ -35,6 +35,7 @@ void minecart::logging::Logger::AddLog(int msgType, const char* fmt, va_list arg
 
     switch (msgType) {
         case LOG_INFO: level = "\033[1;34m[INFO]\033[0m: "; break;
+		case LOG_FATAL: level = "\033[1;31m[FATAL]\033[0m: "; break;
         case LOG_ERROR: level = "\033[1;33m[ERROR]\033[0m: "; break;
         case LOG_WARNING: level = "\033[1;33m[WARN]\033[0m: "; break;
         case LOG_DEBUG: level = "\033[1;37m[DEBUG]\033[0m: "; break;
