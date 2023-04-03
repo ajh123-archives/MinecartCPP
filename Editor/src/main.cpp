@@ -1,5 +1,7 @@
 #include <minecart.h>
+#include <mc_testing.h>
 
 int main(int, char**) {
-	return minecart::engine::run("Minecart Editor", 800, 450);
+	minecart::engine::SetSence(minecart::testing::GetTestScene());
+	return minecart::engine::Run("Minecart Editor", 800, 450);
 }

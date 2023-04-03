@@ -10,18 +10,25 @@
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
 void UpdateDrawFrame(void);     // Update and Draw one frame
+minecart::engine::Scene* currentScene;
 
 namespace minecart {
 	namespace engine {
+		void SetSence(Scene* scene) {
+			currentScene = scene;
+		}
+
 		//----------------------------------------------------------------------------------
 		// Main Enry Point
 		//----------------------------------------------------------------------------------
-		int run(std::string title, int screenWidth, int screenHeight) {
+		int Run(std::string title, int screenWidth, int screenHeight) {
 			// Initialization
 			//--------------------------------------------------------------------------------------
 			SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 			InitWindow(screenWidth, screenHeight, title.c_str());
 			rlImGuiSetup(true);
+
+			currentScene->Setup();
 
 		#if defined(PLATFORM_WEB)
 			emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -37,8 +44,9 @@ namespace minecart {
 
 			// De-Initialization
 			//--------------------------------------------------------------------------------------
-			CloseWindow();        // Close window and OpenGL context
+			currentScene->Shutdown();
 			rlImGuiShutdown();
+			CloseWindow();        // Close window and OpenGL context
 			//--------------------------------------------------------------------------------------
 
 			return 0;
@@ -57,6 +65,7 @@ void UpdateDrawFrame(void) {
 
 	// Draw
 	//----------------------------------------------------------------------------------
+	currentScene->Update();
 	BeginDrawing();
 		rlImGuiBegin();
 
@@ -67,8 +76,8 @@ void UpdateDrawFrame(void) {
 		std::string text = "Congrats! You created your first window!";
 		size_t length = text.length();
 		DrawText(text.c_str(), (w/2)-length, h/2, 20, LIGHTGRAY);
-
-		ImGui::ShowDemoWindow();
+		currentScene->Open = true;
+		currentScene->Show();
 		rlImGuiEnd();
 	EndDrawing();
 	//----------------------------------------------------------------------------------
