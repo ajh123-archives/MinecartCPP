@@ -1,4 +1,4 @@
-# raylib CMake Project
+# Minecart
 
 This uses a base project template from [here](https://github.com/raysan5/raylib/tree/master/projects/CMake).
 
