@@ -1,4 +1,5 @@
-#include "raylib.h"
+#include <raylib.h>
+#include <rlImGui.h>
 #include "minecart.h"
 
 #if defined(PLATFORM_WEB)
@@ -18,7 +19,9 @@ namespace minecart {
 		int run(std::string title, int screenWidth, int screenHeight) {
 			// Initialization
 			//--------------------------------------------------------------------------------------
+			SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 			InitWindow(screenWidth, screenHeight, title.c_str());
+			rlImGuiSetup(true);
 
 		#if defined(PLATFORM_WEB)
 			emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
@@ -35,6 +38,7 @@ namespace minecart {
 			// De-Initialization
 			//--------------------------------------------------------------------------------------
 			CloseWindow();        // Close window and OpenGL context
+			rlImGuiShutdown();
 			//--------------------------------------------------------------------------------------
 
 			return 0;
@@ -54,11 +58,18 @@ void UpdateDrawFrame(void) {
 	// Draw
 	//----------------------------------------------------------------------------------
 	BeginDrawing();
+		rlImGuiBegin();
 
 		ClearBackground(RAYWHITE);
 
-		DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+		int w = GetScreenWidth();
+		int h = GetScreenHeight();
+		std::string text = "Congrats! You created your first window!";
+		size_t length = text.length();
+		DrawText(text.c_str(), (w/2)-length, h/2, 20, LIGHTGRAY);
 
+		ImGui::ShowDemoWindow();
+		rlImGuiEnd();
 	EndDrawing();
 	//----------------------------------------------------------------------------------
 }

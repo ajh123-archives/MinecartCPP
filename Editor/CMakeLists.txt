@@ -12,11 +12,18 @@ target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(
 	minecart
+	${RAYLIB_INCLUDE_DIR}
+	${IMGUI_INCLUDE_DIR}
+	${RLIMGUI_INCLUDE_DIR}
 )
 
 target_link_libraries(Editor
     PRIVATE
     minecart
+	raylib
+	imgui
+	rlimgui
+	-static -static-libgcc -static-libstdc++
 )
 
 # Web Configurations

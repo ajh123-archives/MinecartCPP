@@ -10,10 +10,14 @@ target_include_directories(minecart PUBLIC ${MINECART_INCLUDE_DIR})
 target_include_directories(minecart PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(
-    ${RAYLIB_INCLUDE_DIR}
+	${RAYLIB_INCLUDE_DIR}
+	${IMGUI_INCLUDE_DIR}
+	${RLIMGUI_INCLUDE_DIR}
 )
-    
+
 target_link_libraries(minecart
-    PRIVATE
-    raylib
+	PRIVATE
+	raylib
+	imgui
+	rlimgui
 )
