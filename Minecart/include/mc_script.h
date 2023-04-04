@@ -9,13 +9,13 @@ extern "C" {
 }
 
 namespace minecart {
-	namespace modifyable {
-		class LUAFile {
+	namespace scripting {
+		class Script {
 			private:
 				lua_State *L;
 				std::string path;
 			public:
-				LUAFile(std::string path);
+				Script(std::string path);
 				void Start();
 				void Update();
 				void Shutdown();

@@ -1,0 +1,7 @@
+{
+	"name": "Demo Project",
+	"authors": ["ajh123"],
+	"scripts": {
+		"main": "game.lua"
+	}
+}

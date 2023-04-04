@@ -1,4 +1,5 @@
 #include <minecart.h>
+#include <mc_script.h>
 #include <raylib.h>
 #include <raymath.h>
 
@@ -28,11 +29,25 @@ public:
 			GenTextureMipmaps(&GridTexture);
 			SetTextureFilter(GridTexture, TEXTURE_FILTER_ANISOTROPIC_16X);
 			SetTextureWrap(GridTexture, TEXTURE_WRAP_CLAMP);
+
+			const auto entity = minecart::engine::GetRegistry().create();
+			minecart::engine::GetRegistry().emplace<minecart::scripting::Script>(entity, "game.lua");
+
+			auto view = minecart::engine::GetRegistry().view<minecart::scripting::Script>();
+			view.each([](minecart::scripting::Script script) {
+				script.Start();
+			});
+
 			this->Loaded = true;
 		}
 	}
 
 	void Shutdown() override {
+		auto view = minecart::engine::GetRegistry().view<minecart::scripting::Script>();
+		view.each([](minecart::scripting::Script script) {
+			script.Shutdown();
+		});
+
 		UnloadRenderTexture(this->ViewTexture);
 		UnloadTexture(GridTexture);
 	}
@@ -75,6 +90,11 @@ public:
 	void Update() override {
 		if (!Open)
 			return;
+
+		auto view = minecart::engine::GetRegistry().view<minecart::scripting::Script>();
+		view.each([](minecart::scripting::Script script) {
+			script.Update();
+		});
 
 		if (IsWindowResized()) {
 			UnloadRenderTexture(this->ViewTexture);
