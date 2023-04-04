@@ -18,6 +18,7 @@ include_directories(
 	${LUA_INCLUDE_DIR}
 	${ENTT_INCLUDE_DIR}
 	${JSON_INCLUDE_DIR}
+	${IMGUI_FILE_INCLUDE_DIR}
 )
 
 target_link_libraries(Editor
@@ -29,6 +30,7 @@ target_link_libraries(Editor
 	lua
 	EnTT::EnTT
 	nlohmann_json
+	imgui_file
 	-static -static-libgcc -static-libstdc++
 )
 

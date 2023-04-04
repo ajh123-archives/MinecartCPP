@@ -138,8 +138,8 @@ public:
 	Texture2D GridTexture = { 0 };
 };
 
-EditorScene* scene = new EditorScene();
+EditorScene* mainScene = new EditorScene();
 
 minecart::engine::Scene* minecart::editor::GetEditScene() {
-	return scene;
+	return mainScene;
 }

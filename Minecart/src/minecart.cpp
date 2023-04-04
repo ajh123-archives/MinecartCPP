@@ -24,6 +24,9 @@ entt::registry& minecart::engine::GetRegistry() {
 }
 
 void minecart::engine::SetSence(Scene* scene) {
+	if (currentScene != nullptr) {
+		currentScene->Shutdown();
+	}
 	currentScene = scene;
 }
 
