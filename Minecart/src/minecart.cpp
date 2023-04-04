@@ -18,73 +18,71 @@ minecart::logging::Logger* logger = new minecart::logging::Logger();
 bool running = true;
 entt::registry registry;
 
-namespace minecart {
-	namespace engine {
-		entt::registry& GetRegistry() {
-			return registry;
-		}
 
-		void SetSence(Scene* scene) {
-			currentScene = scene;
-		}
-
-		minecart::logging::Logger* GetLogger() {
-			return logger;
-		}
-
-		void CustomLog(int msgType, const char *text, va_list args) {
-			logger->AddLog(msgType, text, args);
-		}
-		void End() {
-			running = false;
-		}
-		//----------------------------------------------------------------------------------
-		// Main Enry Point
-		//----------------------------------------------------------------------------------
-		int Run(std::string title, int screenWidth, int screenHeight) {
-			// Initialization
-			//--------------------------------------------------------------------------------------
-			SetTraceLogCallback(CustomLog);
-			SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-			InitWindow(screenWidth, screenHeight, title.c_str());
-			rlImGuiSetup(true);
-			ImGuiIO& io = ImGui::GetIO();
-			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-			io.ConfigWindowsResizeFromEdges = true;
-
-			logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
-
-			if (currentScene != nullptr) {
-				currentScene->Setup();
-				logger->AddLog(LOG_DEBUG, "MAIN: Scene Loaded");
-			}
-
-		#if defined(PLATFORM_WEB)
-			emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
-		#else
-			SetTargetFPS(60);   // Set our game to run at 60 frames-per-second
-			//--------------------------------------------------------------------------------------
-
-			// Main game loop
-			while (!WindowShouldClose() && running) {   // Detect window close button or ESC key
-				UpdateDrawFrame();
-			}
-		#endif
-
-			// De-Initialization
-			//--------------------------------------------------------------------------------------
-			if (currentScene != nullptr) {
-				currentScene->Shutdown();
-			}
-			logger->AddLog(LOG_INFO, "MAIN: Program Shutdown");
-			rlImGuiShutdown();
-			CloseWindow();        // Close window and OpenGL context
-			//--------------------------------------------------------------------------------------
-
-			return 0;
-		}
-	}
+entt::registry& minecart::engine::GetRegistry() {
+	return registry;
 }
+
+void minecart::engine::SetSence(Scene* scene) {
+	currentScene = scene;
+}
+
+minecart::logging::Logger* minecart::engine::GetLogger() {
+	return logger;
+}
+
+void CustomLog(int msgType, const char *text, va_list args) {
+	logger->AddLog(msgType, text, args);
+}
+void minecart::engine::End() {
+	running = false;
+}
+//----------------------------------------------------------------------------------
+// Main Enry Point
+//----------------------------------------------------------------------------------
+int minecart::engine::Run(std::string title, int screenWidth, int screenHeight) {
+	// Initialization
+	//--------------------------------------------------------------------------------------
+	SetTraceLogCallback(CustomLog);
+	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+	InitWindow(screenWidth, screenHeight, title.c_str());
+	rlImGuiSetup(true);
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigWindowsResizeFromEdges = true;
+
+	logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
+
+	if (currentScene != nullptr) {
+		currentScene->Setup();
+		logger->AddLog(LOG_DEBUG, "MAIN: Scene Loaded");
+	}
+
+#if defined(PLATFORM_WEB)
+	emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
+#else
+	SetTargetFPS(60);   // Set our game to run at 60 frames-per-second
+	//--------------------------------------------------------------------------------------
+
+	// Main game loop
+	while (!WindowShouldClose() && running) {   // Detect window close button or ESC key
+		UpdateDrawFrame();
+	}
+#endif
+
+	// De-Initialization
+	//--------------------------------------------------------------------------------------
+	if (currentScene != nullptr) {
+		currentScene->Shutdown();
+	}
+	logger->AddLog(LOG_INFO, "MAIN: Program Shutdown");
+	rlImGuiShutdown();
+	CloseWindow();        // Close window and OpenGL context
+	//--------------------------------------------------------------------------------------
+
+	return 0;
+}
+
 
 //----------------------------------------------------------------------------------
 // Module Functions Definition

@@ -12,7 +12,7 @@ namespace minecart {
 		entt::registry& GetRegistry();
 		int Run(std::string title, int screenWidth, int screenHeight);
 		void End();
-		void SetSence(Scene* scene);
+		void SetSence(minecart::engine::Scene* scene);
 		minecart::logging::Logger* GetLogger();
 	}
 }

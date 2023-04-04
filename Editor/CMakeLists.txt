@@ -17,6 +17,7 @@ include_directories(
 	${RLIMGUI_INCLUDE_DIR}
 	${LUA_INCLUDE_DIR}
 	${ENTT_INCLUDE_DIR}
+	${JSON_INCLUDE_DIR}
 )
 
 target_link_libraries(Editor
@@ -27,6 +28,7 @@ target_link_libraries(Editor
 	rlimgui
 	lua
 	EnTT::EnTT
+	nlohmann_json
 	-static -static-libgcc -static-libstdc++
 )
 

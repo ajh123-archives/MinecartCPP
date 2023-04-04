@@ -15,6 +15,7 @@ include_directories(
 	${RLIMGUI_INCLUDE_DIR}
 	${LUA_INCLUDE_DIR}
 	${ENTT_INCLUDE_DIR}
+	${JSON_INCLUDE_DIR}
 )
 
 target_link_libraries(minecart
@@ -24,4 +25,5 @@ target_link_libraries(minecart
 	rlimgui
 	lua
 	EnTT::EnTT
+	nlohmann_json
 )

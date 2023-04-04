@@ -1,5 +1,5 @@
-#ifndef MINECART_LUA_H
-#define MINECART_LUA_H
+#ifndef MINECART_SCRIPT_H
+#define MINECART_SCRIPT_H
 
 #include <string>
 extern "C" {
@@ -24,4 +24,4 @@ namespace minecart {
 	}
 }
 
-#endif // MINECART_LUA_H
+#endif // MINECART_SCRIPT_H

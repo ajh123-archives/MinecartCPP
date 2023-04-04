@@ -1,5 +1,5 @@
-#ifndef MINECART_TESTING_H
-#define MINECART_TESTING_H
+#ifndef MINECART_SCENE_H
+#define MINECART_SCENE_H
 
 #include <string>
 #include <raylib.h>
@@ -27,4 +27,4 @@ namespace minecart {
 	}
 }
 
-#endif // MINECART_TESTING_H
+#endif // MINECART_SCENE_H
