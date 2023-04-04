@@ -14,6 +14,7 @@ include_directories(
 	${IMGUI_INCLUDE_DIR}
 	${RLIMGUI_INCLUDE_DIR}
 	${LUA_INCLUDE_DIR}
+	${ENTT_INCLUDE_DIR}
 )
 
 target_link_libraries(minecart
@@ -22,4 +23,5 @@ target_link_libraries(minecart
 	imgui
 	rlimgui
 	lua
+	EnTT::EnTT
 )

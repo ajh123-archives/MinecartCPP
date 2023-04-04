@@ -44,6 +44,9 @@ namespace minecart {
 			SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 			InitWindow(screenWidth, screenHeight, title.c_str());
 			rlImGuiSetup(true);
+			ImGuiIO& io = ImGui::GetIO();
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+			io.ConfigWindowsResizeFromEdges = true;
 
 			logger->AddLog(LOG_DEBUG, "MAIN: Loading LUA");
 			luaFile->Start();
