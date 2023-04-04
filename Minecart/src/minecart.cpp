@@ -105,7 +105,6 @@ void UpdateDrawFrame(void) {
 			currentScene->Open = true;
 			currentScene->Show();
 		}
-		logger->Draw("Debug");
 		rlImGuiEnd();
 	EndDrawing();
 	//----------------------------------------------------------------------------------
