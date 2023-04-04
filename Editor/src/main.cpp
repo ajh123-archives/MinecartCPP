@@ -3,5 +3,5 @@
 
 int main(int, char**) {
 	minecart::engine::SetSence(minecart::testing::GetTestScene());
-	return minecart::engine::Run("Minecart Editor", 800, 450);
+	return minecart::engine::Run("Minecart Editor", 1100, 650);
 }

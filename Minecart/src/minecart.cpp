@@ -16,7 +16,7 @@
 void UpdateDrawFrame(void);     // Update and Draw one frame
 minecart::engine::Scene* currentScene = nullptr;
 minecart::logging::Logger* logger = new minecart::logging::Logger();
-minecart::modifyable::LUAFile* luaFile = new minecart::modifyable::LUAFile();
+minecart::modifyable::LUAFile* luaFile = new minecart::modifyable::LUAFile("game.lua");
 
 
 namespace minecart {

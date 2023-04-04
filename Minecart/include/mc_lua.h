@@ -13,11 +13,13 @@ namespace minecart {
 		class LUAFile {
 			private:
 				lua_State *L;
+				std::string path;
 			public:
-				LUAFile();
+				LUAFile(std::string path);
 				void Start();
 				void Update();
 				void Shutdown();
+				bool CheckState(int r);
 		};
 	}
 }
