@@ -3,10 +3,13 @@
 #include <raymath.h>
 
 #include <imgui.h>
+#include <imgui_internal.h>
 #include <rlImGui.h>
 #include <rlImGuiColors.h>
 
 class EditorScene : public minecart::engine::Scene {
+private:
+	bool UI_Loaded = false;
 public:
 	Camera3D Camera = { 0 };
 
@@ -35,11 +38,22 @@ public:
 	}
 
 	void Show() override {
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("File")) {
+				ImGui::Separator();
+				if (ImGui::MenuItem("Close")) {
+					minecart::engine::End();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
 
 		ImGui::Begin("3D View", &this->Open, ImGuiWindowFlags_NoScrollbar);
-		Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
+		this->Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
 

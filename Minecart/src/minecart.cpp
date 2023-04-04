@@ -17,7 +17,7 @@ void UpdateDrawFrame(void);     // Update and Draw one frame
 minecart::engine::Scene* currentScene = nullptr;
 minecart::logging::Logger* logger = new minecart::logging::Logger();
 minecart::modifyable::LUAFile* luaFile = new minecart::modifyable::LUAFile("game.lua");
-
+bool running = true;
 
 namespace minecart {
 	namespace engine {
@@ -30,9 +30,10 @@ namespace minecart {
 		}
 
 		void CustomLog(int msgType, const char *text, va_list args) {
-			// vprintf(text, args);
-			// printf("\n");
 			logger->AddLog(msgType, text, args);
+		}
+		void End() {
+			running = false;
 		}
 		//----------------------------------------------------------------------------------
 		// Main Enry Point
@@ -64,7 +65,7 @@ namespace minecart {
 			//--------------------------------------------------------------------------------------
 
 			// Main game loop
-			while (!WindowShouldClose()) {   // Detect window close button or ESC key
+			while (!WindowShouldClose() && running) {   // Detect window close button or ESC key
 				UpdateDrawFrame();
 			}
 		#endif

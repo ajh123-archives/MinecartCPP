@@ -9,6 +9,7 @@
 namespace minecart {
 	namespace engine {
 		int Run(std::string title, int screenWidth, int screenHeight);
+		void End();
 		void SetSence(Scene* scene);
 		minecart::logging::Logger* GetLogger();
 	}

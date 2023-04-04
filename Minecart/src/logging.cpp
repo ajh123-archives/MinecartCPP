@@ -56,7 +56,7 @@ void minecart::logging::Logger::AddLog(int msgType, const char* fmt, va_list arg
 }
 
 void minecart::logging::Logger::Draw(const char* title, bool* p_open) {
-	ImGui::SetNextWindowSizeConstraints(ImVec2(400, 200), ImVec2(400, 200));
+	ImGui::SetNextWindowSizeConstraints(ImVec2(400, 200), ImVec2(GetScreenWidth(), GetScreenHeight()));
 	if (!ImGui::Begin(title, p_open)) {
 		ImGui::End();
 		return;
