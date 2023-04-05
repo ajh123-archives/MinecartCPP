@@ -26,6 +26,7 @@ public:
 		return;
 	}
 
+	minecart::editor::project::Project project;
 	void Show() override {
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
 
@@ -46,14 +47,27 @@ public:
 				std::ifstream f(filePathName);
 				json data = json::parse(f);
 				f.close();
-				minecart::editor::project::Project project = minecart::editor::project::ParseProject(data, filePath);
+				project = minecart::editor::project::ParseProject(data, filePath);
 				project.projectSettingsPath = filePathName;
-				minecart::engine::Scene* editScene = minecart::editor::GetEditScene(project);
-				minecart::engine::SetSence(editScene);
+				if (!project.hasError) {
+					minecart::engine::Scene* editScene = minecart::editor::GetEditScene(project);
+					minecart::engine::SetSence(editScene);
+				} else {
+					ImGui::OpenPopup("Project Error");
+				}
 			}
 
 			// close
 			ImGuiFileDialog::Instance()->Close();
+		}
+
+		if (ImGui::BeginPopupModal("Project Error")) {
+			ImGui::Text("There was a problem while loading the project.");
+			ImGui::Text("Please check the file '%s'", project.projectSettingsPath.c_str());
+			if (ImGui::Button("Close")) {
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::EndPopup();
 		}
 	}
 

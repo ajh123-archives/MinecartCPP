@@ -39,7 +39,6 @@ minecart::editor::project::Project minecart::editor::project::ParseProject(nlohm
 	}
 	// Load project scripts
 	if (data["scripts"].is_object()) {
-		// project.scripts = data["scripts"].get<std::map<std::string, std::string>>();
 		std::map<json, json> scripts = data["scripts"].get<std::map<json, json>>();
 		for(std::map<json, json>::iterator iter = scripts.begin(); iter != scripts.end(); ++iter) {
 			json key =  iter->first;
