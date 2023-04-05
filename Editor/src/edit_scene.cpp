@@ -1,3 +1,5 @@
+#include <filesystem>
+
 #include <minecart.h>
 #include <mc_script.h>
 
@@ -14,8 +16,16 @@
 class EditorScene : public minecart::engine::Scene {
 private:
 	bool UI_Loaded = false;
+	minecart::editor::Project project;
 public:
 	Camera3D Camera = { 0 };
+	void Init(minecart::editor::Project project) {
+		if (this->Loaded) {
+			this->Shutdown();
+			this->Loaded = false;
+		}
+		this->project = project;
+	}
 
 	void Setup() override {
 		if (this->Loaded == false) {
@@ -34,7 +44,14 @@ public:
 			SetTextureWrap(GridTexture, TEXTURE_WRAP_CLAMP);
 
 			const auto entity = minecart::engine::GetRegistry().create();
-			minecart::engine::GetRegistry().emplace<minecart::scripting::Script>(entity, "game.lua");
+
+			if (project.scripts.count("main") == 1) {
+				std::filesystem::path dir (this->project.projectDir);
+				std::filesystem::path scripts ("Scripts");
+				std::filesystem::path file (this->project.scripts["main"]);
+				std::filesystem::path full_path = dir / scripts / file;
+				minecart::engine::GetRegistry().emplace<minecart::scripting::Script>(entity, full_path.u8string());
+			}
 
 			auto view = minecart::engine::GetRegistry().view<minecart::scripting::Script>();
 			view.each([](minecart::scripting::Script script) {
@@ -143,5 +160,6 @@ public:
 EditorScene* mainScene = new EditorScene();
 
 minecart::engine::Scene* minecart::editor::GetEditScene(minecart::editor::Project project) {
+	mainScene->Init(project);
 	return mainScene;
 }
