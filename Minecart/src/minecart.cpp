@@ -56,11 +56,6 @@ int minecart::engine::Run(std::string title, int screenWidth, int screenHeight) 
 
 	logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
 
-	if (currentScene != nullptr) {
-		currentScene->Setup();
-		logger->AddLog(LOG_DEBUG, "MAIN: Scene Loaded");
-	}
-
 #if defined(PLATFORM_WEB)
 	emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
 #else
@@ -91,9 +86,10 @@ int minecart::engine::Run(std::string title, int screenWidth, int screenHeight) 
 // Module Functions Definition
 //----------------------------------------------------------------------------------
 void UpdateDrawFrame(void) {
-	// Update
+	// Update / setup
 	//----------------------------------------------------------------------------------
 	if (currentScene != nullptr) {
+		currentScene->Setup();
 		currentScene->Update();
 	}
 

@@ -11,10 +11,49 @@
 #include "editor.h"
 using json = nlohmann::json;
 
-minecart::editor::Project ParseProject(json data) {
+minecart::editor::Project ParseProject(json data, std::string filePath) {
 	minecart::editor::Project project;
+	project.loaded = false;
+	project.hasError = false;
+	project.projectDir = filePath;
+	project.name = "";
 	project.authors = {};
 	project.scripts = {};
+
+	// Load project name
+	if (data["name"].is_string()) {
+		project.name = data["name"].get<std::string>();
+	} else {
+		project.hasError = true;
+	}
+	// Load project authors
+	if (data["authors"].is_array()) {
+		std::vector<json> authors = data["authors"].get<std::vector<json>>();
+		for(int index = 0; index < authors.size(); index++)    {
+			if (authors[index].is_string()) {
+				project.authors.push_back(authors[index].get<std::string>());
+			}
+		}
+	} else {
+		project.hasError = true;
+	}
+	// Load project scripts
+	if (data["scripts"].is_object()) {
+		// project.scripts = data["scripts"].get<std::map<std::string, std::string>>();
+		std::map<json, json> scripts = data["scripts"].get<std::map<json, json>>();
+		for(std::map<json, json>::iterator iter = scripts.begin(); iter != scripts.end(); ++iter) {
+			json key =  iter->first;
+			if (key.is_string()) {
+				if (iter->second.is_string()) {
+					std::string keyString = key.get<std::string>();
+					std::string valueString = iter->second.get<std::string>();
+					project.scripts.emplace(keyString, valueString);
+				}
+			}
+		}
+	} else {
+		project.hasError = true;
+	}
 
 	return project;
 }
@@ -23,6 +62,8 @@ class MainScene : public minecart::engine::Scene {
 public:
 	void Setup() override {
 		if (this->Loaded == false) {
+			minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "EDITOR: Main Scene Loaded");
+
 			this->Loaded = true;
 		}
 		return;
@@ -51,8 +92,9 @@ public:
 
 				std::ifstream f(filePathName);
 				json data = json::parse(f);
-				minecart::editor::Project project = ParseProject(data);
-				minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "%s", project.name);
+				minecart::editor::Project project = ParseProject(data, filePath);
+				minecart::engine::Scene* editScene = minecart::editor::GetEditScene(project);
+				minecart::engine::SetSence(editScene);
 			}
 
 			// close

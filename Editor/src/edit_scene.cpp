@@ -41,6 +41,8 @@ public:
 				script.Start();
 			});
 
+			minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "EDITOR: Edit Scene Loaded");
+
 			this->Loaded = true;
 		}
 	}
@@ -140,6 +142,6 @@ public:
 
 EditorScene* mainScene = new EditorScene();
 
-minecart::engine::Scene* minecart::editor::GetEditScene() {
+minecart::engine::Scene* minecart::editor::GetEditScene(minecart::editor::Project project) {
 	return mainScene;
 }
