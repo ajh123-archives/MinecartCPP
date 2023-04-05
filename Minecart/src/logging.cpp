@@ -1,10 +1,18 @@
 #include <imgui.h>
 #include <stdio.h>
+#include <sstream>
 #include <string>
 #include <time.h> 
 #include <raylib.h>
 #include <regex>
 #include "mc_logging.h"
+#include "minecart.h"
+
+extern "C" {
+	#include <lua.h>
+	#include <lauxlib.h>
+	#include <lualib.h>
+}
 
 minecart::logging::Logger::Logger() {
 	this->AutoScroll = true;
@@ -15,6 +23,36 @@ void minecart::logging::Logger::Clear() {
 	this->Buf.clear();
 	this->LineOffsets.clear();
 	this->LineOffsets.push_back(0);
+}
+
+int minecart::logging::lua_Print(lua_State *L) {
+	int msgType = 2;
+
+	int nargs = lua_gettop(L);
+	const char* sep = "  ";
+	std::ostringstream ss;
+	for (int i = 1; i <= nargs; i++) {
+		const char* str = luaL_tolstring(L, i, nullptr);
+		ss << str << sep;
+		lua_pop(L, 1);
+	}
+	minecart::engine::GetLogger()->AddLog(msgType, "LUA: %s", ss.str().c_str());
+	return 0;
+}
+
+int minecart::logging::lua_PrintLog(lua_State *L) {
+	int msgType = lua_tonumber(L, 1);
+
+	int nargs = lua_gettop(L);
+	const char* sep = "  ";
+	std::ostringstream ss;
+	for (int i = 2; i <= nargs; i++) {
+		const char* str = luaL_tolstring(L, i, nullptr);
+		ss << str << sep;
+		lua_pop(L, 1);
+	}
+	minecart::engine::GetLogger()->AddLog(msgType, "LUA: %s", ss.str().c_str());
+	return 0;
 }
 
 void minecart::logging::Logger::AddLog(int msgType, const char* fmt, ...) {

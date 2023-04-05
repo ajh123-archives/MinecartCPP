@@ -7,12 +7,17 @@ extern "C" {
 #include <string>
 #include <raylib.h>
 #include "mc_script.h"
+#include "mc_logging.h"
 #include "minecart.h"
 
 minecart::scripting::Script::Script(std::string path) {
 	this->path = path;
 	this->L = luaL_newstate();
 	luaL_openlibs(this->L);
+	lua_pushcfunction(L, minecart::logging::lua_PrintLog);
+	lua_setglobal(L, "printLog");
+	lua_pushcfunction(L, minecart::logging::lua_Print);
+	lua_setglobal(L, "print");
 }
 
 void minecart::scripting::Script::Start() {

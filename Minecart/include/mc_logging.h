@@ -1,11 +1,19 @@
 #ifndef MINECART_LOGGING_H
 #define MINECART_LOGGING_H
 
+extern "C" {
+	#include <lua.h>
+	#include <lauxlib.h>
+	#include <lualib.h>
+}
+
 #include <string>
 #include <imgui.h>
 
 namespace minecart {
 	namespace logging {
+		int lua_PrintLog(lua_State *L);
+		int lua_Print(lua_State *L);
 		class Logger {
 			protected:
 				ImGuiTextBuffer     Buf;
