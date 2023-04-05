@@ -3,7 +3,6 @@
 
 #include <string>
 #include <raylib.h>
-#include "minecart.h"
 
 namespace minecart {
 	namespace engine {

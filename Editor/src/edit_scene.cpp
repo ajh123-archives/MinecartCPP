@@ -12,16 +12,20 @@
 #include <rlImGuiColors.h>
 
 #include "editor.h"
+using json = nlohmann::json;
 
 class EditorScene : public minecart::engine::Scene {
 private:
 	bool UI_Loaded = false;
-	minecart::editor::Project project;
+	bool ProjectUI = false;
+	minecart::editor::project::Project project;
 public:
 	Camera3D Camera = { 0 };
-	void Init(minecart::editor::Project project) {
+	void Init(minecart::editor::project::Project project) {
 		if (this->Loaded) {
 			this->Shutdown();
+			this->UI_Loaded = false;
+			this->ProjectUI = false;
 			this->Loaded = false;
 		}
 		this->project = project;
@@ -77,6 +81,9 @@ public:
 	void Show() override {
 		if (ImGui::BeginMainMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
+				if (ImGui::MenuItem("Project Settings")) {
+					this->ProjectUI = true;
+				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close")) {
 					minecart::engine::End();
@@ -107,6 +114,10 @@ public:
 		ImGui::PopStyleVar();
 
 		minecart::engine::GetLogger()->Draw("Debug");
+
+		if (this->ProjectUI) {
+			minecart::editor::project::OpenProjectUI(&project, &this->ProjectUI);
+		}
 	}
 
 	void Update() override {
@@ -159,7 +170,7 @@ public:
 
 EditorScene* mainScene = new EditorScene();
 
-minecart::engine::Scene* minecart::editor::GetEditScene(minecart::editor::Project project) {
+minecart::engine::Scene* minecart::editor::GetEditScene(minecart::editor::project::Project project) {
 	mainScene->Init(project);
 	return mainScene;
 }
