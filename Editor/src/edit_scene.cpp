@@ -35,7 +35,7 @@ public:
 
 			ImGuiID dock_id_up;
 			ImGuiID dock_id_down;
-			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Up, 0.70f, &dock_id_up, &dock_id_down);
+			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Up, 0.75f, &dock_id_up, &dock_id_down);
 			
 
 			ImGui::DockBuilderDockWindow("Console", dock_id_down);
@@ -152,7 +152,7 @@ public:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
 
-		ImGui::Begin("3D View", &this->Open, ImGuiWindowFlags_NoScrollbar);
+		ImGui::Begin("Scene View", &this->Open, ImGuiWindowFlags_NoScrollbar);
 		this->Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
@@ -169,7 +169,7 @@ public:
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		minecart::engine::GetLogger()->Draw("Debug Log");
+		minecart::engine::GetLogger()->Draw("Console");
 
 		if (this->ProjectUI) {
 			minecart::editor::project::OpenProjectUI(&project, &this->ProjectUI);
