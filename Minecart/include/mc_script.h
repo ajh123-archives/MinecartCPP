@@ -10,6 +10,7 @@ extern "C" {
 
 namespace minecart {
 	namespace scripting {
+		void AddLuaLibs(lua_State *L);
 		class Script {
 			private:
 				lua_State *L;

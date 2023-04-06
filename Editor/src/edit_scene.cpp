@@ -21,6 +21,33 @@ private:
 	minecart::editor::project::Project project;
 public:
 	Camera3D Camera = { 0 };
+	void BuildEditorLayout() {
+		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+		ImGuiViewport *viewport = ImGui::GetMainViewport();
+		ImGuiID dock = ImGui::GetID("Dockspace");
+	    ImGui::DockSpace(dock, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+		if (!this->UI_Loaded) {
+			ImGui::DockBuilderRemoveNode(dock); // clear any previous layout
+			ImGui::DockBuilderAddNode(dock, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
+			ImGui::DockBuilderSetNodeSize(dock, viewport->Size);
+
+
+			ImGuiID dock_id_up;
+			ImGuiID dock_id_down;
+			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Up, 0.70f, &dock_id_up, &dock_id_down);
+			
+
+			ImGui::DockBuilderDockWindow("Console", dock_id_down);
+			ImGui::DockBuilderDockWindow("Scene View", dock_id_up);
+
+			ImGui::DockBuilderFinish(dock);
+		}
+
+		// ImGui::DockBuilderFinish(dock);
+		this->UI_Loaded = true;
+	}
+
 	void Init(minecart::editor::project::Project project) {
 		if (this->Loaded) {
 			this->Shutdown();
@@ -79,7 +106,28 @@ public:
 	}
 
 	void Show() override {
-		if (ImGui::BeginMainMenuBar()) {
+		ClearBackground(BLACK);
+		ImGui::SetNextWindowPos(ImVec2(0, 0));                                                  // always at the window origin
+		ImGui::SetNextWindowSize(ImVec2(float(GetScreenWidth()), float(GetScreenHeight())));    // always at the window size
+
+		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus |                 // we just want to use this window as a host for the menubar and docking
+			ImGuiWindowFlags_NoNavFocus |                                                      // so turn off everything that would make it act like a window
+			ImGuiWindowFlags_NoDocking |
+			ImGuiWindowFlags_NoTitleBar |
+			ImGuiWindowFlags_NoResize |
+			ImGuiWindowFlags_NoMove |
+			ImGuiWindowFlags_NoCollapse |
+			ImGuiWindowFlags_MenuBar |
+			ImGuiWindowFlags_NoBackground;                                                      // we want our game content to show through this window, so turn off the background.
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));                          // we don't want any padding for windows docked to this window frame
+
+		bool show = (ImGui::Begin("Main", NULL, windowFlags));                                   // show the "window"
+		ImGui::PopStyleVar();
+
+		this->BuildEditorLayout();
+
+		if (ImGui::BeginMenuBar()) {
 			if (ImGui::BeginMenu("File")) {
 				if (ImGui::MenuItem("Project Settings")) {
 					this->ProjectUI = true;
@@ -90,8 +138,16 @@ public:
 				}
 				ImGui::EndMenu();
 			}
-			ImGui::EndMainMenuBar();
+			if (ImGui::BeginMenu("View")) {
+				if (ImGui::MenuItem("Reset Layout")) {
+					this->UI_Loaded = false;
+					this->BuildEditorLayout();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
 		}
+		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
@@ -113,7 +169,7 @@ public:
 		ImGui::End();
 		ImGui::PopStyleVar();
 
-		minecart::engine::GetLogger()->Draw("Debug");
+		minecart::engine::GetLogger()->Draw("Debug Log");
 
 		if (this->ProjectUI) {
 			minecart::editor::project::OpenProjectUI(&project, &this->ProjectUI);

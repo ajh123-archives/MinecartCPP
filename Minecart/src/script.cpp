@@ -8,16 +8,13 @@ extern "C" {
 #include <raylib.h>
 #include "mc_script.h"
 #include "mc_logging.h"
+#include "mc_scripting_lib.h"
 #include "minecart.h"
 
 minecart::scripting::Script::Script(std::string path) {
 	this->path = path;
 	this->L = luaL_newstate();
-	luaL_openlibs(this->L);
-	lua_pushcfunction(L, minecart::logging::lua_PrintLog);
-	lua_setglobal(L, "printLog");
-	lua_pushcfunction(L, minecart::logging::lua_Print);
-	lua_setglobal(L, "print");
+	minecart::scripting::AddLuaLibs(this->L);
 }
 
 void minecart::scripting::Script::Start() {
@@ -41,4 +38,11 @@ bool minecart::scripting::Script::CheckState(int r) {
 		return false;	
 	}
 	return true;
+}
+
+void minecart::scripting::AddLuaLibs(lua_State *L) {
+	luaL_openlibs(L);
+	lua_pushcfunction(L, minecart::logging::lua_Print);
+	lua_setglobal(L, "print");
+	luaL_requiref(L, "minecart", AddMineCartLib, 0);
 }
