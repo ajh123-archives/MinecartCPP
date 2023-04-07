@@ -35,11 +35,19 @@ public:
 
 			ImGuiID dock_id_up;
 			ImGuiID dock_id_down;
-			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Up, 0.75f, &dock_id_up, &dock_id_down);
-			
+			ImGuiID dock_id_left;
+			ImGuiID dock_id_middle;
+			ImGuiID dock_id_middle1;
+			ImGuiID dock_id_right;
+
+			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Right, 0.15f, &dock_id_right, &dock_id_middle1);
+			ImGui::DockBuilderSplitNode(dock_id_middle1, ImGuiDir_Up, 0.75f, &dock_id_up, &dock_id_down);
+			ImGui::DockBuilderSplitNode(dock_id_up, ImGuiDir_Left, 0.15f, &dock_id_left, &dock_id_middle);
 
 			ImGui::DockBuilderDockWindow("Console", dock_id_down);
-			ImGui::DockBuilderDockWindow("Scene View", dock_id_up);
+			ImGui::DockBuilderDockWindow("Scene View", dock_id_middle);
+			ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+			ImGui::DockBuilderDockWindow("Files", dock_id_left);
 
 			ImGui::DockBuilderFinish(dock);
 		}
@@ -122,7 +130,7 @@ public:
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));                          // we don't want any padding for windows docked to this window frame
 
-		bool show = (ImGui::Begin("Main", NULL, windowFlags));                                   // show the "window"
+		ImGui::Begin("Main", NULL, windowFlags);                                   // show the "window"
 		ImGui::PopStyleVar();
 
 		this->BuildEditorLayout();
@@ -170,6 +178,14 @@ public:
 		ImGui::PopStyleVar();
 
 		minecart::engine::GetLogger()->Draw("Console");
+
+		ImGui::Begin("Files");
+
+		ImGui::End();
+
+		ImGui::Begin("Inspector");
+
+		ImGui::End();
 
 		if (this->ProjectUI) {
 			minecart::editor::project::OpenProjectUI(&project, &this->ProjectUI);
