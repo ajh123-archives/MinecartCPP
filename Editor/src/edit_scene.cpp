@@ -32,7 +32,7 @@ public:
 			ImGui::DockBuilderAddNode(dock, dockspace_flags | ImGuiDockNodeFlags_DockSpace);
 			ImGui::DockBuilderSetNodeSize(dock, viewport->Size);
 
-
+			// Define our dock spaces ids
 			ImGuiID dock_id_up;
 			ImGuiID dock_id_down;
 			ImGuiID dock_id_left;
@@ -40,19 +40,20 @@ public:
 			ImGuiID dock_id_middle1;
 			ImGuiID dock_id_right;
 
+			// Split docks where needed
 			ImGui::DockBuilderSplitNode(dock, ImGuiDir_Right, 0.15f, &dock_id_right, &dock_id_middle1);
 			ImGui::DockBuilderSplitNode(dock_id_middle1, ImGuiDir_Up, 0.75f, &dock_id_up, &dock_id_down);
 			ImGui::DockBuilderSplitNode(dock_id_up, ImGuiDir_Left, 0.15f, &dock_id_left, &dock_id_middle);
 
+			// Dock our windows
 			ImGui::DockBuilderDockWindow("Console", dock_id_down);
-			ImGui::DockBuilderDockWindow("Scene View", dock_id_middle);
+			ImGui::DockBuilderDockWindow("Main View", dock_id_middle);
 			ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
 			ImGui::DockBuilderDockWindow("Files", dock_id_left);
 
+			// Finish dock bulder
 			ImGui::DockBuilderFinish(dock);
 		}
-
-		// ImGui::DockBuilderFinish(dock);
 		this->UI_Loaded = true;
 	}
 
@@ -160,7 +161,7 @@ public:
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
 
-		ImGui::Begin("Scene View", &this->Open, ImGuiWindowFlags_NoScrollbar);
+		ImGui::Begin("Main View", nullptr, ImGuiWindowFlags_NoScrollbar);
 		this->Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
@@ -179,9 +180,7 @@ public:
 
 		minecart::engine::GetLogger()->Draw("Console");
 
-		ImGui::Begin("Files");
-
-		ImGui::End();
+		minecart::editor::DirectoryTreeView(project.projectDir, "Files");
 
 		ImGui::Begin("Inspector");
 

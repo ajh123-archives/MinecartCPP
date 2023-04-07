@@ -14,6 +14,7 @@ namespace minecart {
 	namespace editor {
 		minecart::engine::Scene* GetMainScene();
 		minecart::engine::Scene* GetEditScene(minecart::editor::project::Project project);
+		void DirectoryTreeView(std::string directoryPath, std::string name);
 	}
 }
 
