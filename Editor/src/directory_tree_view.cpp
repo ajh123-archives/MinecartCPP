@@ -5,11 +5,12 @@
 
 #define BIT(x) (1 << x)
 
-std::pair<bool, uint32_t> DirectoryTreeViewRecursive(const std::filesystem::path& path, uint32_t* count, int* selection_mask) {
+std::pair<bool, std::pair<std::string, uint32_t>> DirectoryTreeViewRecursive(const std::filesystem::path& path, uint32_t* count, int* selection_mask) {
 	ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_SpanFullWidth;
 
 	bool any_node_clicked = false;
 	uint32_t node_clicked = 0;
+	std::string node_path = "";
 
 	for (const auto& entry : std::filesystem::directory_iterator(path)) {
 		ImGuiTreeNodeFlags node_flags = base_flags;
@@ -32,6 +33,7 @@ std::pair<bool, uint32_t> DirectoryTreeViewRecursive(const std::filesystem::path
 		if (ImGui::IsItemClicked()) {
 			node_clicked = *count;
 			any_node_clicked = true;
+			node_path = entry.path().string();
 		}
 
 		(*count)--;
@@ -43,7 +45,8 @@ std::pair<bool, uint32_t> DirectoryTreeViewRecursive(const std::filesystem::path
 
 				if (!any_node_clicked) {
 					any_node_clicked = clickState.first;
-					node_clicked = clickState.second;
+					node_clicked = clickState.second.second;
+					node_path = clickState.second.first;
 				}
 
 				ImGui::TreePop();
@@ -55,10 +58,10 @@ std::pair<bool, uint32_t> DirectoryTreeViewRecursive(const std::filesystem::path
 		}
 	}
 
-	return { any_node_clicked, node_clicked };
+	return { any_node_clicked, { node_path, node_clicked} };
 }
 
-void minecart::editor::DirectoryTreeView(std::string directoryPath, std::string name) {
+std::pair<bool, std::pair<std::string, uint32_t>> minecart::editor::DirectoryTreeView(std::string directoryPath, std::string name) {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 
 	ImGui::Begin(name.c_str());
@@ -70,18 +73,19 @@ void minecart::editor::DirectoryTreeView(std::string directoryPath, std::string 
 
 	static int selection_mask = 0;
 
-	auto clickState = DirectoryTreeViewRecursive(directoryPath, &count, &selection_mask);
+	std::pair<bool, std::pair<std::string, uint32_t>>  clickState = DirectoryTreeViewRecursive(directoryPath, &count, &selection_mask);
 
 	if (clickState.first) {
 		// Update selection state
 		// (process outside of tree loop to avoid visual inconsistencies during the clicking frame)
 		if (ImGui::GetIO().KeyCtrl)
-			selection_mask ^= BIT(clickState.second);          // CTRL+click to toggle
+			selection_mask ^= BIT(clickState.second.second);          // CTRL+click to toggle
 		else //if (!(selection_mask & (1 << clickState.second))) // Depending on selection behavior you want, may want to preserve selection when clicking on item that is part of the selection
-			selection_mask = BIT(clickState.second);           // Click to single-select
+			selection_mask = BIT(clickState.second.second);           // Click to single-select
 	}
 
 	ImGui::End();
 
 	ImGui::PopStyleVar();
+	return clickState;
 }

@@ -180,7 +180,10 @@ public:
 
 		minecart::engine::GetLogger()->Draw("Console");
 
-		minecart::editor::DirectoryTreeView(project.projectDir, "Files");
+		std::pair<bool, std::pair<std::string, uint32_t>> fileState = minecart::editor::DirectoryTreeView(project.projectDir, "Files");
+
+		if (fileState.first != 0 || fileState.second.second != 0)
+		minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "%i %i %s", fileState.first, fileState.second.second, fileState.second.first.c_str());
 
 		ImGui::Begin("Inspector");
 
