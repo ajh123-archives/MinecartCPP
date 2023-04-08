@@ -116,6 +116,7 @@ public:
 
 	void Show() override {
 		ClearBackground(BLACK);
+
 		ImGui::SetNextWindowPos(ImVec2(0, 0));                                                  // always at the window origin
 		ImGui::SetNextWindowSize(ImVec2(float(GetScreenWidth()), float(GetScreenHeight())));    // always at the window size
 
@@ -182,8 +183,11 @@ public:
 
 		std::pair<bool, std::pair<std::string, uint32_t>> fileState = minecart::editor::DirectoryTreeView(project.projectDir, "Files");
 
-		if (fileState.first != 0 || fileState.second.second != 0)
-		minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "%i %i %s", fileState.first, fileState.second.second, fileState.second.first.c_str());
+		int c = ImGui::GetMouseClickedCount(ImGuiMouseButton_Left);
+		bool entryIsFile = !std::filesystem::is_directory(fileState.second.first);
+		if (fileState.first != 0 && c == 2 && entryIsFile) {
+			minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "%s", fileState.second.first.c_str());
+		}
 
 		ImGui::Begin("Inspector");
 

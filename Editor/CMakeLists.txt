@@ -19,6 +19,7 @@ include_directories(
 	${ENTT_INCLUDE_DIR}
 	${JSON_INCLUDE_DIR}
 	${IMGUI_FILE_INCLUDE_DIR}
+	${ZEP_INCLUDE_DIR}
 )
 
 target_link_libraries(Editor
@@ -31,6 +32,7 @@ target_link_libraries(Editor
 	EnTT::EnTT
 	nlohmann_json
 	imgui_file
+	Zep
 	-static -static-libgcc -static-libstdc++
 )
 

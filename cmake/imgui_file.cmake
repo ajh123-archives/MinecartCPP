@@ -4,7 +4,7 @@ if (NOT imgui_file_FOUND) # If there's none, fetch and build imgui_file
 	include(FetchContent)
 	FetchContent_Declare(
 		imgui_file
-		URL https://github.com/aiekick/ImGuiFileDialog/archive//${IMGUI_FILE_BRANCH}.tar.gz
+		URL https://github.com/aiekick/ImGuiFileDialog/archive/${IMGUI_FILE_BRANCH}.tar.gz
 	)
 	FetchContent_GetProperties(imgui_file)
 	if (NOT imgui_file_POPULATED) # Have we downloaded imgui_file yet?
