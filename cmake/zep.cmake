@@ -1,10 +1,10 @@
-set(ZEP_VERSION "v0.1.12")
+set(ZEP_BRANCH "master")
 find_package(zep QUIET) # QUIET or REQUIRED
 if (NOT zep_FOUND) # If there's none, fetch and build zep
 	include(FetchContent)
 	FetchContent_Declare(
 		zep
-		URL https://github.com/Rezonality/zep/archive/refs/tags/${ZEP_VERSION}.tar.gz
+		URL https://github.com/Rezonality/zep/archive/${ZEP_BRANCH}.tar.gz
 	)
 	FetchContent_GetProperties(zep)
 	if (NOT zep_POPULATED) # Have we downloaded zep yet?

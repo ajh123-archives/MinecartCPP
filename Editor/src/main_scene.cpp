@@ -15,6 +15,7 @@ class MainScene : public minecart::engine::Scene {
 public:
 	void Setup() override {
 		if (this->Loaded == false) {
+			minecart::editor::SetupImGuiStyle();
 			minecart::engine::GetLogger()->AddLog(LOG_DEBUG, "EDITOR: Main Scene Loaded");
 
 			this->Loaded = true;
@@ -28,7 +29,10 @@ public:
 
 	minecart::editor::project::Project project;
 	void Show() override {
-		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
+		float w = (float)GetScreenWidth();
+		float h = (float)GetScreenHeight();
+		ImGui::SetNextWindowPos(ImVec2(0+w/4, 0+h/4));
+		ImGui::SetNextWindowSizeConstraints(ImVec2(w/2, h/2), ImVec2(w/2, h/2));
 
 		ImGui::Begin("Projects", &this->Open);
 
