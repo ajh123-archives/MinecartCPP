@@ -1,7 +1,5 @@
 # Minecart
 
-This uses a base project template from [here](https://github.com/raysan5/raylib/tree/master/projects/CMake).
-
 ## Building
 
 To compile Minecart, use one of the following dependending on your build target...
@@ -9,7 +7,7 @@ To compile Minecart, use one of the following dependending on your build target.
 ### Probable requirements
 
 You may need to install some packages on your system to build Minecart.
-Currentlly I show how to build on Debian-based, RedHat-based, and MSYS2 (Windows) systems.
+Currently I show how to build on Debian-based, RedHat-based, and MSYS2 (Windows) systems.
 
 #### Debian-based Systems
 
@@ -17,6 +15,8 @@ The following instructions apply to:
 
 * Ubuntu 20.04, 18.04, 16.04
 * Debian 10, 9
+
+(Note: these instructions may be outdated)
 
 ```
 sudo apt-get install -y \
@@ -32,6 +32,8 @@ sudo apt-get install -y \
 The following instructions apply to:
 
 * Fedora 22 and higher
+
+(Note: these instructions may be outdated)
 
 ```
 sudo dnf install -y \

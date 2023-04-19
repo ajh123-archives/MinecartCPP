@@ -94,7 +94,7 @@ public:
 	void Show() override {
 		minecart::engine::Backend* backend = minecart::engine::GetBackend();
 
-		ImGui::SetNextWindowPos(ImVec2(0, 0));                                                  // always at the window origin
+		ImGui::SetNextWindowPos(ImVec2(backend->GetWinPosX(), backend->GetWinPosY()));                                                  // always at the window origin
 		ImGui::SetNextWindowSize(ImVec2(float(backend->GetWidth()), float(backend->GetHeight())));    // always at the window size
 
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus |                 // we just want to use this window as a host for the menubar and docking

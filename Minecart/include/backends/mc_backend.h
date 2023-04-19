@@ -17,6 +17,8 @@ namespace minecart {
 			virtual void ExitSceneMode() = 0;
 			virtual int GetHeight() = 0;
 			virtual int GetWidth() = 0;
+			virtual int GetWinPosX() = 0;
+			virtual int GetWinPosY() = 0;
 		};
 	}
 }

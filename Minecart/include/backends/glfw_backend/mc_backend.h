@@ -28,6 +28,8 @@ namespace minecart {
 			void ExitSceneMode();
 			int GetHeight();
 			int GetWidth();
+			int GetWinPosX();
+			int GetWinPosY();
 		};
 	}
 }

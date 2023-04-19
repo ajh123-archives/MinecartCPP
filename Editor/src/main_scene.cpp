@@ -30,7 +30,7 @@ public:
 		minecart::engine::Backend* backend = minecart::engine::GetBackend();
 		float w = (float)backend->GetWidth();
 		float h = (float)backend->GetHeight();
-		ImGui::SetNextWindowPos(ImVec2(0+w/4, 0+h/4));
+		ImGui::SetNextWindowPos(ImVec2(backend->GetWinPosX()+w/4, backend->GetWinPosY()+h/4));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(w/2, h/2), ImVec2(w/2, h/2));
 
 		ImGui::Begin("Projects", &this->Open);

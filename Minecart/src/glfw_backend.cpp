@@ -102,6 +102,16 @@ namespace minecart {
 			glfwGetFramebufferSize(this->Window, &display_w, &display_h);
 			return display_h;
 		}
+		int GLFWBackend::GetWinPosX() {
+			int display_x, display_y;
+			glfwGetWindowPos(this->Window, &display_x, &display_y);
+			return display_x;
+		}
+		int GLFWBackend::GetWinPosY() {
+			int display_x, display_y;
+			glfwGetWindowPos(this->Window, &display_x, &display_y);
+			return display_y;
+		}
 		int GLFWBackend::ShouldClose() {
 			int close = glfwWindowShouldClose(this->Window);
 			return close;
