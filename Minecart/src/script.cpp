@@ -5,7 +5,6 @@ extern "C" {
 }
 
 #include <string>
-#include <raylib.h>
 #include "mc_script.h"
 #include "mc_logging.h"
 #include "mc_scripting_lib.h"

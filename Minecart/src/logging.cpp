@@ -3,7 +3,6 @@
 #include <sstream>
 #include <string>
 #include <time.h> 
-#include <raylib.h>
 #include <regex>
 #include "mc_logging.h"
 #include "minecart.h"
@@ -94,7 +93,8 @@ void minecart::logging::Logger::AddLog(int msgType, const char* fmt, va_list arg
 }
 
 void minecart::logging::Logger::Draw(const char* title, bool* p_open) {
-	ImGui::SetNextWindowSizeConstraints(ImVec2(400, 200), ImVec2(GetScreenWidth(), GetScreenHeight()));
+	minecart::engine::Backend* backend = minecart::engine::GetBackend();
+	ImGui::SetNextWindowSizeConstraints(ImVec2(400, 200), ImVec2(backend->GetWidth(), backend->GetHeight()));
 	if (!ImGui::Begin(title, p_open)) {
 		ImGui::End();
 		return;

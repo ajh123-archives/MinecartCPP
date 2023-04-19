@@ -10,9 +10,10 @@ target_include_directories(minecart PUBLIC ${MINECART_INCLUDE_DIR})
 target_include_directories(minecart PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(
-	${RAYLIB_INCLUDE_DIR}
+	${GLFW_INCLUDE_DIR}
+	${GLAD_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIR}
 	${IMGUI_INCLUDE_DIR}
-	${RLIMGUI_INCLUDE_DIR}
 	${LUA_INCLUDE_DIR}
 	${ENTT_INCLUDE_DIR}
 	${JSON_INCLUDE_DIR}
@@ -20,10 +21,20 @@ include_directories(
 
 target_link_libraries(minecart
 	PRIVATE
-	raylib
+	glfw
+	glad
+	glm
 	imgui
-	rlimgui
 	lua
 	EnTT::EnTT
 	nlohmann_json
+)
+
+set (source "${CMAKE_SOURCE_DIR}/resources")
+set (destination "${CMAKE_BINARY_DIR}/resources")
+add_custom_command(
+	TARGET minecart POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E create_symlink ${source} ${destination} 
+	DEPENDS ${destination}
+	COMMENT "symbolic link resources folder from ${source} => ${destination}"
 )

@@ -2,18 +2,19 @@
 #define MINECART_H
 
 #include <string>
-#include <raylib.h>
 #include <entt/entt.hpp>
 #include "mc_logging.h"
 #include "mc_scene.h"
+#include "backends/mc_backend.h"
 
 namespace minecart {
 	namespace engine {
 		entt::registry& GetRegistry();
-		int Run(std::string title, int screenWidth, int screenHeight);
+		int Run(Backend* Backend, std::string title, int screenWidth, int screenHeight);
 		void End();
 		void SetSence(minecart::engine::Scene* scene);
 		minecart::logging::Logger* GetLogger();
+		Backend* GetBackend();
 	}
 }
 

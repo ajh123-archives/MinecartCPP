@@ -16,6 +16,11 @@ if (NOT imgui_file_FOUND) # If there's none, fetch and build imgui_file
 		file(GLOB IMGUI_FILE_SOURCES ${IMGUI_FILE_INCLUDE_DIR}/*.cpp)
 		file(GLOB IMGUI_FILE_HEADERS ${IMGUI_FILE_INCLUDE_DIR}/*.h)
 
+		include_directories(
+			imgui_file
+			${IMGUI_INCLUDE_DIR}
+		)
+
 		add_library(imgui_file STATIC ${IMGUI_FILE_SOURCES})
 		set_target_properties(imgui_file PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${imgui_file_BINARY_DIR}/imgui_file)

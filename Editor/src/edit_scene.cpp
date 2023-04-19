@@ -3,13 +3,8 @@
 #include <minecart.h>
 #include <mc_script.h>
 
-#include <raylib.h>
-#include <raymath.h>
-
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <rlImGui.h>
-#include <rlImGuiColors.h>
 
 #include "editor.h"
 using json = nlohmann::json;
@@ -20,7 +15,6 @@ private:
 	bool ProjectUI = false;
 	minecart::editor::project::Project project;
 public:
-	Camera3D Camera = { 0 };
 	void BuildEditorLayout() {
 		ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGuiViewport *viewport = ImGui::GetMainViewport();
@@ -69,20 +63,6 @@ public:
 
 	void Setup() override {
 		if (this->Loaded == false) {
-			this->ViewTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
-
-			Camera.fovy = 45;
-			Camera.up.y = 1;
-			Camera.position.y = 3;
-			Camera.position.z = -25;
-
-			Image img = GenImageChecked(256, 256, 32, 32, DARKGRAY, WHITE);
-			GridTexture = LoadTextureFromImage(img);
-			UnloadImage(img);
-			GenTextureMipmaps(&GridTexture);
-			SetTextureFilter(GridTexture, TEXTURE_FILTER_ANISOTROPIC_16X);
-			SetTextureWrap(GridTexture, TEXTURE_WRAP_CLAMP);
-
 			const auto entity = minecart::engine::GetRegistry().create();
 
 			if (project.scripts.count("main") == 1) {
@@ -109,16 +89,13 @@ public:
 		view.each([](minecart::scripting::Script script) {
 			script.Shutdown();
 		});
-
-		UnloadRenderTexture(this->ViewTexture);
-		UnloadTexture(GridTexture);
 	}
 
 	void Show() override {
-		ClearBackground(BLACK);
+		minecart::engine::Backend* backend = minecart::engine::GetBackend();
 
 		ImGui::SetNextWindowPos(ImVec2(0, 0));                                                  // always at the window origin
-		ImGui::SetNextWindowSize(ImVec2(float(GetScreenWidth()), float(GetScreenHeight())));    // always at the window size
+		ImGui::SetNextWindowSize(ImVec2(float(backend->GetWidth()), float(backend->GetHeight())));    // always at the window size
 
 		ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoBringToFrontOnFocus |                 // we just want to use this window as a host for the menubar and docking
 			ImGuiWindowFlags_NoNavFocus |                                                      // so turn off everything that would make it act like a window
@@ -160,21 +137,14 @@ public:
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)GetScreenWidth(), (float)GetScreenHeight()));
+		ImGui::SetNextWindowSizeConstraints(ImVec2(400, 400), ImVec2((float)backend->GetWidth(), (float)backend->GetHeight()));
 
 		ImGui::Begin("Main View", nullptr, ImGuiWindowFlags_NoScrollbar);
 		this->Focused = ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows);
 
 		ImVec2 size = ImGui::GetContentRegionAvail();
 
-		Rectangle viewRect = { 0 };
-		viewRect.x = this->ViewTexture.texture.width / 2 - size.x / 2;
-		viewRect.y = this->ViewTexture.texture.height / 2 - size.y / 2;
-		viewRect.width = size.x;
-		viewRect.height = -size.y;
-
-		// draw the view
-		rlImGuiImageRect(&this->ViewTexture.texture, (int)size.x, (int)size.y, viewRect);
+		// TODO: Draw a Scene
 
 		ImGui::End();
 		ImGui::PopStyleVar();
@@ -206,44 +176,7 @@ public:
 		view.each([](minecart::scripting::Script script) {
 			script.Update();
 		});
-
-		if (IsWindowResized()) {
-			UnloadRenderTexture(this->ViewTexture);
-			this->ViewTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
-		}
-
-		float period = 10;
-		float magnitude = 25;
-
-		Camera.position.x = (float)(sinf((float)GetTime() / period) * magnitude);
-
-		BeginTextureMode(this->ViewTexture);
-		ClearBackground(SKYBLUE);
-
-		BeginMode3D(Camera);
-
-		// grid of cube trees on a plane to make a "world"
-		DrawPlane(Vector3 { 0, 0, 0 }, Vector2{ 50, 50 }, BEIGE); // simple world plane
-		float spacing = 4;
-		int count = 5;
-
-		for (float x = -count * spacing; x <= count * spacing; x += spacing) {
-			for (float z = -count * spacing; z <= count * spacing; z += spacing) {
-				Vector3 pos = { x, 0.5f, z };
-
-				Vector3 min = { x - 0.5f,0,z - 0.5f };
-				Vector3 max = { x + 0.5f,1,z + 0.5f };
-
-				DrawCube(Vector3{ x, 1.5f, z }, 1, 1, 1, GREEN);
-				DrawCube(Vector3{ x, 0.5f, z }, 0.25f, 1, 0.25f, BROWN);
-			}
-		}
-
-		EndMode3D();
-		EndTextureMode();
 	}
-
-	Texture2D GridTexture = { 0 };
 };
 
 EditorScene* mainScene = new EditorScene();

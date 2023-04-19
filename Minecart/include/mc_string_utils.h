@@ -6,7 +6,6 @@
 #include <sstream>
 #include <vector>
 
-
 namespace minecart {
 	namespace utils {
 		std::string JoinStringVector(std::string delimiter, std::vector<std::string> vector);

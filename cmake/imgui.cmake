@@ -13,8 +13,18 @@ if (NOT imgui_FOUND) # If there's none, fetch and build imgui
 
 		# Configure ImGui build
 		set(IMGUI_INCLUDE_DIR ${imgui_SOURCE_DIR})
-		file(GLOB IMGUI_SOURCES ${IMGUI_INCLUDE_DIR}/*.cpp ${IMGUI_INCLUDE_DIR}/misc/cpp/*.cpp)
+		file(GLOB IMGUI_SOURCES 
+			${IMGUI_INCLUDE_DIR}/*.cpp 
+			${IMGUI_INCLUDE_DIR}/misc/cpp/*.cpp  
+			${IMGUI_INCLUDE_DIR}/backends/imgui_impl_glfw.cpp
+			${IMGUI_INCLUDE_DIR}/backends/imgui_impl_opengl3.cpp
+		)
 		file(GLOB IMGUI_HEADERS ${IMGUI_INCLUDE_DIR}/*.h)
+
+		include_directories(
+			imgui
+			${IMGUI_INCLUDE_DIR}
+		)
 
 		add_library(imgui STATIC ${IMGUI_SOURCES})
 		set_target_properties(imgui PROPERTIES

@@ -12,9 +12,10 @@ target_include_directories(Editor PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 include_directories(
 	minecart
-	${RAYLIB_INCLUDE_DIR}
+	${GLFW_INCLUDE_DIR}
+	${GLAD_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIR}
 	${IMGUI_INCLUDE_DIR}
-	${RLIMGUI_INCLUDE_DIR}
 	${LUA_INCLUDE_DIR}
 	${ENTT_INCLUDE_DIR}
 	${JSON_INCLUDE_DIR}
@@ -23,11 +24,12 @@ include_directories(
 )
 
 target_link_libraries(Editor
-    PRIVATE
-    minecart
-	raylib
+	PRIVATE
+	minecart
+	glfw
+	glad
+	glm
 	imgui
-	rlimgui
 	lua
 	EnTT::EnTT
 	nlohmann_json
@@ -36,15 +38,18 @@ target_link_libraries(Editor
 	-static -static-libgcc -static-libstdc++
 )
 
-# Web Configurations
-if (${PLATFORM} STREQUAL "Web")
-	# Tell Emscripten to build an example.html file.
-	set_target_properties(Editor PROPERTIES SUFFIX ".html")
-endif()
-
 # Checks if OSX and links appropriate frameworks (Only required on MacOS)
 if (APPLE)
 	target_link_libraries(Editor "-framework IOKit")
 	target_link_libraries(Editor "-framework Cocoa")
 	target_link_libraries(Editor "-framework OpenGL")
 endif()
+
+set (source "${CMAKE_SOURCE_DIR}/resources")
+set (destination "${CMAKE_BINARY_DIR}/resources")
+add_custom_command(
+	TARGET Editor POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E create_symlink ${source} ${destination} 
+	DEPENDS ${destination}
+	COMMENT "symbolic link resources folder from ${source} => ${destination}"
+)

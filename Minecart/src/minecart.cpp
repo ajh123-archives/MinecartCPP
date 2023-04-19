@@ -1,13 +1,7 @@
-#include <raylib.h>
-#include <rlImGui.h>
 #include <stdio.h>
 #include <string>
 #include "minecart.h"
 #include "mc_logging.h"
-
-#if defined(PLATFORM_WEB)
-	#include <emscripten/emscripten.h>
-#endif
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -17,6 +11,7 @@ minecart::engine::Scene* currentScene = nullptr;
 minecart::logging::Logger* logger = new minecart::logging::Logger();
 bool running = true;
 entt::registry registry;
+minecart::engine::Backend* mainBackennd;
 
 
 entt::registry& minecart::engine::GetRegistry() {
@@ -40,42 +35,31 @@ void CustomLog(int msgType, const char *text, va_list args) {
 void minecart::engine::End() {
 	running = false;
 }
+
+minecart::engine::Backend* minecart::engine::GetBackend() {
+	return mainBackennd;
+}
 //----------------------------------------------------------------------------------
 // Main Enry Point
 //----------------------------------------------------------------------------------
-int minecart::engine::Run(std::string title, int screenWidth, int screenHeight) {
+int minecart::engine::Run(Backend* backend, std::string title, int screenWidth, int screenHeight) {
 	// Initialization
 	//--------------------------------------------------------------------------------------
-	SetTraceLogCallback(CustomLog);
-	SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-	InitWindow(screenWidth, screenHeight, title.c_str());
-	rlImGuiSetup(true);
-	ImGuiIO& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	io.ConfigWindowsResizeFromEdges = true;
-
-	logger->AddLog(LOG_INFO, "MAIN: Program Loaded");
-
-#if defined(PLATFORM_WEB)
-	emscripten_set_main_loop(UpdateDrawFrame, 0, 1);
-#else
-	SetTargetFPS(60);   // Set our game to run at 60 frames-per-second
-	//--------------------------------------------------------------------------------------
-
+	if (!backend->Setup(title, screenWidth, screenHeight)) {
+		logger->AddLog(LOG_FATAL, "MAIN: The backend failed to load");
+	}
+	mainBackennd = backend;
 	// Main game loop
-	while (!WindowShouldClose() && running) {   // Detect window close button or ESC key
+	while (!backend->ShouldClose() && running) {   // Detect window close button or ESC key
 		UpdateDrawFrame();
 	}
-#endif
 
 	// De-Initialization
 	//--------------------------------------------------------------------------------------
 	if (currentScene != nullptr) {
 		currentScene->Shutdown();
 	}
-	logger->AddLog(LOG_INFO, "MAIN: Program Shutdown");
-	rlImGuiShutdown();
-	CloseWindow();        // Close window and OpenGL context
+	backend->Shutdown();
 	//--------------------------------------------------------------------------------------
 
 	return 0;
@@ -86,23 +70,19 @@ int minecart::engine::Run(std::string title, int screenWidth, int screenHeight) 
 // Module Functions Definition
 //----------------------------------------------------------------------------------
 void UpdateDrawFrame(void) {
-	// Update / setup
+	// Draw and Update
 	//----------------------------------------------------------------------------------
-	if (currentScene != nullptr) {
-		currentScene->Setup();
-		currentScene->Update();
-	}
-
-	// Draw
-	//----------------------------------------------------------------------------------
-	BeginDrawing();
-		rlImGuiBegin();
-		ClearBackground(WHITE);
+	mainBackennd->Update();
+	mainBackennd->BeginFrame();
+		// Update / setup
+		//----------------------------------------------------------------------------------
 		if (currentScene != nullptr) {
+			currentScene->Setup();
+			currentScene->Update();
+		// And draw
 			currentScene->Open = true;
 			currentScene->Show();
 		}
-		rlImGuiEnd();
-	EndDrawing();
+	mainBackennd->EndFrame();
 	//----------------------------------------------------------------------------------
 }

@@ -49,7 +49,7 @@ sudo dnf install -y \
 
 * x86_64 based systems
 ```
-pacman -S base-devel mingw-w64-x86_64-{cmake,gcc,freeglut,glew,libpng,mesa}
+pacman -S base-devel mingw-w64-x86_64-{cmake,gcc,freeglut,glew,libpng,mesa,egl-headers}
 ```
 * other systems
 

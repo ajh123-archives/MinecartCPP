@@ -6,8 +6,6 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-#include <raylib.h>
-
 #include "editor.h"
 using json = nlohmann::json;
 
@@ -29,8 +27,9 @@ public:
 
 	minecart::editor::project::Project project;
 	void Show() override {
-		float w = (float)GetScreenWidth();
-		float h = (float)GetScreenHeight();
+		minecart::engine::Backend* backend = minecart::engine::GetBackend();
+		float w = (float)backend->GetWidth();
+		float h = (float)backend->GetHeight();
 		ImGui::SetNextWindowPos(ImVec2(0+w/4, 0+h/4));
 		ImGui::SetNextWindowSizeConstraints(ImVec2(w/2, h/2), ImVec2(w/2, h/2));
 
